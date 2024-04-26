@@ -29,29 +29,57 @@ async function run() {
         const database = client.db("TourExplorerDB");
         const spotsCollection = database.collection("tourist_spots");
 
-        app.get('/touristSpots', async(req, res) => {
+        app.get('/touristSpots', async (req, res) => {
             const cursor = spotsCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
-        app.get('/touristSpots/:id', async(req, res) => {
+        app.get('/touristSpots/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await spotsCollection.findOne(query);
             res.send(result);
         })
 
-        app.get('/mySpots/:email', async(req, res) => {
+        app.get('/mySpots/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email };
             const result = await spotsCollection.find(query).toArray();
             res.send(result);
         })
 
-        app.post('/touristSpots', async(req, res) => {
+        app.post('/touristSpots', async (req, res) => {
             const newSpot = req.body;
             const result = await spotsCollection.insertOne(newSpot);
+            res.send(result);
+        })
+
+        app.patch('/touristSpots/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedSpot = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    image: updatedSpot.image,
+                    tourist_spot_name: updatedSpot.tourist_spot_name,
+                    country_Name: updatedSpot.country_Name,
+                    location: updatedSpot.location,
+                    shortdescription: updatedSpot.shortdescription,
+                    average_cost: updatedSpot.average_cost,
+                    seasonality: updatedSpot.seasonality,
+                    travel_time: updatedSpot.travel_time,
+                    totalVisitorsPerYear: updatedSpot.totalVisitorsPerYear
+                },
+            };
+            const result = await spotsCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
+        app.delete('/touristSpots/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await spotsCollection.deleteOne(query);
             res.send(result);
         })
 
