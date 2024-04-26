@@ -28,9 +28,16 @@ async function run() {
 
         const database = client.db("TourExplorerDB");
         const spotsCollection = database.collection("tourist_spots");
+        const countriesCollection = database.collection("countries");
 
         app.get('/touristSpots', async (req, res) => {
             const cursor = spotsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/countries', async(req, res) => {
+            const cursor = countriesCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
