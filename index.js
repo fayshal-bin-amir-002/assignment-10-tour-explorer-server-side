@@ -49,6 +49,31 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/sortSpots/:txt', async (req, res) => {
+            const txt = req.params.txt;
+            if (txt === 'none') {
+                const cursor = spotsCollection.find();
+                const result = await cursor.toArray();
+                res.send(result);
+            }
+            if (txt === 'high') {
+                const cursor = spotsCollection.find();
+                const result1 = await cursor.toArray();
+                const result = result1.sort((a, b) => {
+                    return Number(a.average_cost) - Number(b.average_cost)
+                });
+                res.send(result);
+            }
+            if (txt === 'low') {
+                const cursor = spotsCollection.find();
+                const result1 = await cursor.toArray();
+                const result = result1.sort((a, b) => {
+                    return Number(b.average_cost) - Number(a.average_cost)
+                });
+                res.send(result);
+            }
+        })
+
         app.post('/touristSpots', async (req, res) => {
             const newSpot = req.body;
             const result = await spotsCollection.insertOne(newSpot);
