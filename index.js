@@ -30,9 +30,18 @@ async function run() {
         const spotsCollection = database.collection("tourist_spots");
         const countriesCollection = database.collection("countries");
 
+        //get all tourists spots data
         app.get('/touristSpots', async (req, res) => {
             const cursor = spotsCollection.find();
             const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/countrySpots/:country', async (req, res) => {
+            const country = req.params.country;
+            const query = { country_Name: country };
+            const cursor = spotsCollection.find();
+            const result = await spotsCollection.find(query).toArray();
             res.send(result);
         })
 
